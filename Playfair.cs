@@ -1,16 +1,69 @@
+/*
+NÂNG CẤP 
+- THÊM KÝ TỰ SỐ TỪ 0 -> 9
+- MA TRẬN KHÓA TỪ 5x5 -> 7x5 
+*/
+
+using System;
+using System.Text;
+
 public class Playfair {
+    private const int N = 14;
     private string banro = "";
     private string khoa = "";
-    private char[] bangchucai = {
-        'A', 'B', 'C', 'D', 'E', 'F', 'G',
-        'H', 'I', 'K', 'L', 'M', 'N', 'O', 
-        'P', 'Q', 'R', 'S', 'T', 'U', 'V', 
-        'W', 'X', 'Y', 'Z'
+    // private char[] bangkytu = {
+    //     'A', 'B', 'C', 'D', 'E', 'F', 'G',
+    //     'H', 'I', 'K', 'L', 'M', 'N', 'O', 
+    //     'P', 'Q', 'R', 'S', 'T', 'U', 'V', 
+    //     'W', 'X', 'Y', 'Z', '0', '1', '2', 
+    //     '3', '4', '5', '6', '7', '8', '9'
+    // };
+    private char[] bangkytu = {
+        // ===== Chữ hoa (26) =====
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+
+        // ===== Số (10) =====
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+
+        // ===== Chữ hoa có dấu (67) =====
+        'Đ',
+        'À', 'Á', 'Ả', 'Ã', 'Ạ',
+        'Ă', 'Ằ', 'Ắ', 'Ẳ', 'Ẵ', 'Ặ',
+        'Â', 'Ầ', 'Ấ', 'Ẩ', 'Ẫ', 'Ậ',
+        'È', 'É', 'Ẻ', 'Ẽ', 'Ẹ',
+        'Ê', 'Ề', 'Ế', 'Ể', 'Ễ', 'Ệ',
+        'Ì', 'Í', 'Ỉ', 'Ĩ', 'Ị',
+        'Ò', 'Ó', 'Ỏ', 'Õ', 'Ọ',
+        'Ô', 'Ồ', 'Ố', 'Ổ', 'Ỗ', 'Ộ',
+        'Ơ', 'Ờ', 'Ớ', 'Ở', 'Ỡ', 'Ợ',
+        'Ù', 'Ú', 'Ủ', 'Ũ', 'Ụ',
+        'Ư', 'Ừ', 'Ứ', 'Ử', 'Ữ', 'Ự',
+        'Ỳ', 'Ý', 'Ỷ', 'Ỹ', 'Ỵ',
+
+        // ===== Chữ thường (26) =====
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+
+        // ===== Chữ thường có dấu (67) =====
+        'đ',
+        'à', 'á', 'ả', 'ã', 'ạ',
+        'ă', 'ằ', 'ắ', 'ẳ', 'ẵ', 'ặ',
+        'â', 'ầ', 'ấ', 'ẩ', 'ẫ', 'ậ',
+        'è', 'é', 'ẻ', 'ẽ', 'ẹ',
+        'ê', 'ề', 'ế', 'ể', 'ễ', 'ệ',
+        'ì', 'í', 'ỉ', 'ĩ', 'ị',
+        'ò', 'ó', 'ỏ', 'õ', 'ọ',
+        'ô', 'ồ', 'ố', 'ổ', 'ỗ', 'ộ',
+        'ơ', 'ờ', 'ớ', 'ở', 'ỡ', 'ợ',
+        'ù', 'ú', 'ủ', 'ũ', 'ụ',
+        'ư', 'ừ', 'ứ', 'ử', 'ữ', 'ự',
+        'ỳ', 'ý', 'ỷ', 'ỹ', 'ỵ'
     };
     // dãy khóa đã chọn lọc từ trùng nhưng là 1 dãy nằm ngang 
     // tiện cho việc sắp xếp và chọn lọc
     private List<char> daykhoa = new List<char>();
-    // sau đó bỏ dãy vào ma trận 5x5 
+    // sau đó bỏ dãy vào ma trận 7x5 
     private List<List<char>> matrankhoa = new List<List<char>>();
 
     public Playfair(){
@@ -30,7 +83,8 @@ public class Playfair {
         get { return this.banro; }
         set {
             if(!string.IsNullOrEmpty(value)){
-                this.banro = value.ToUpper().Replace(" ", "");
+                // this.banro = value.ToUpper().Replace(" ", "");
+                this.banro = this.LocKyTu(value);
             }
         }
     }
@@ -39,15 +93,15 @@ public class Playfair {
         get { return this.khoa; }
         set {
             if(!string.IsNullOrEmpty(value)){
-                this.khoa = value.ToUpper().Replace(" ", "");
+                this.khoa = this.LocKyTu(value);
             }
         }
     }
 
     private void KhoiTaoMaTranKhoa(){
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < N; i++){
             this.matrankhoa.Add(new List<char>());
-            for(int j = 0; j < 5; j++){
+            for(int j = 0; j < N; j++){
                 this.matrankhoa[i].Add(' ');
             }
         }
@@ -80,6 +134,16 @@ public class Playfair {
         }
     }
 
+    private string LocKyTu(string value){
+        StringBuilder sb = new StringBuilder();
+        foreach(char c in value.Normalize(NormalizationForm.FormC)){
+            if(Array.IndexOf(this.bangkytu, c) >= 0){
+                sb.Append(c);
+            }
+        }
+        return sb.ToString();
+    }
+
     private void BoKhoaVaoMaTran(){
         // bỏ khóa vào dãy khóa trước
         for(int i = 0; i < this.khoa.Length; i++){
@@ -96,27 +160,28 @@ public class Playfair {
         }
 
         // bỏ các từ còn lại trong bảng chữ cái vào dãy khóa 
-        for(int i = 0; i < this.bangchucai.Length; i++){
+        for(int i = 0; i < this.bangkytu.Length; i++){
             // nếu chữ cái nào không trùng với những từ đã có trong dãy khóa
             // thì thêm vào cho đủ 
-            if(!this.daykhoa.Contains(this.bangchucai[i])){
-                this.daykhoa.Add(this.bangchucai[i]);
+            if(!this.daykhoa.Contains(this.bangkytu[i])){
+                this.daykhoa.Add(this.bangkytu[i]);
             }
         }
 
         // chuyển dãy khóa (mảng 1 chiều) thành bảng khóa (ma trận)
-        for(int i = 0; i < 5; i++){
-            for(int j = 0; j < 5; j++){
-                this.matrankhoa[i][j] = this.daykhoa[i * 5 + j];
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                this.matrankhoa[i][j] = this.daykhoa[i * N + j];
             }
         }
     }
 
     public string MaHoa(){
         string banma = "";
-        string banro_tam = this.banro.ToUpper();
+        string banro_tam = this.banro;
+        //string banro_tam = this.banro.ToUpper();
         // thay những chữ J thành I và I/J chung 1 ô nên quy về I 
-        banro_tam = banro_tam.Replace('J', 'I');
+        //banro_tam = banro_tam.Replace('J', 'I');
         for(int i = 0; i < banro_tam.Length; i+=2){
             char a = banro_tam[i];
             char b;
@@ -138,8 +203,8 @@ public class Playfair {
             int dong1 = 0, cot1 = 0;
             int dong2 = 0, cot2 = 0;
 
-            for(int j = 0; j < 5; j++){
-                for(int k = 0; k < 5; k++){
+            for(int j = 0; j < N; j++){
+                for(int k = 0; k < N; k++){
                     // gán dòng và cột cho từng chữ cái trong 1 cặp
                     if(this.matrankhoa[j][k] == a){
                         dong1 = j; cot1 = k;
@@ -154,14 +219,14 @@ public class Playfair {
             // dòng giữ nguyên, cột xích 1  
             // % 5 là để quay lại đầu dòng đó  
             if(dong1 == dong2){
-                banma += this.matrankhoa[dong1][(cot1 + 1) % 5];
-                banma += this.matrankhoa[dong2][(cot2 + 1) % 5];
+                banma += this.matrankhoa[dong1][(cot1 + 1) % N];
+                banma += this.matrankhoa[dong2][(cot2 + 1) % N];
             }
             // nếu cùng cột thì xích xuống 1 hàng 
             // dòng xích 1, cột giữ nguyên 
             else if(cot1 == cot2){
-                banma += this.matrankhoa[(dong1 + 1) % 5][cot1];
-                banma += this.matrankhoa[(dong2 + 1) % 5][cot2];
+                banma += this.matrankhoa[(dong1 + 1) % N][cot1];
+                banma += this.matrankhoa[(dong2 + 1) % N][cot2];
             }
             // nếu khác dòng khác cột 
             // thì giữ nguyên dòng đổi cột
@@ -186,8 +251,8 @@ public class Playfair {
             int dong1 = 0, cot1 = 0;
             int dong2 = 0, cot2 = 0;
 
-            for(int j = 0; j < 5; j++){
-                for(int k = 0; k < 5; k++){
+            for(int j = 0; j < N; j++){
+                for(int k = 0; k < N; k++){
                     // gán dòng và cột cho từng chữ cái trong 1 cặp
                     if(this.matrankhoa[j][k] == a){
                         dong1 = j; cot1 = k;
@@ -202,13 +267,13 @@ public class Playfair {
             // VD: A  B  C  D  E  đang ở E muốn quay về D thì (Vị trí hiện tại + 4) % 5 
             // --> 1  2  3  4  0  lúc này nó đã quay về D
             if(dong1 == dong2){
-                banro += matrankhoa[dong1][(cot1 + 4) % 5];
-                banro += matrankhoa[dong2][(cot2 + 4) % 5];
+                banro += matrankhoa[dong1][(cot1 + N - 1) % N];
+                banro += matrankhoa[dong2][(cot2 + N - 1) % N];
             }
             // cùng cột làm tương tự 
             else if(cot1 == cot2){
-                banro += matrankhoa[(dong1 + 4) % 5][cot1];
-                banro += matrankhoa[(dong2 + 4) % 5][cot2];
+                banro += matrankhoa[(dong1 + N - 1) % N][cot1];
+                banro += matrankhoa[(dong2 + N - 1) % N][cot2];
             }
             // bản mã giữ dòng đổi cột
             // bản rõ cũng làm tương tự để giữ nguyên vị trí ban đầu 
@@ -241,7 +306,7 @@ public class Playfair {
     }
 
     // hàm tách cặp chữ để in ra 
-    private string TachCap(string noidung){
+    private string InTachCap(string noidung){
         string ketquatachcap = "";
         for(int i = 0; i < noidung.Length; i += 2){
             ketquatachcap += noidung[i];
@@ -254,9 +319,9 @@ public class Playfair {
     }
 
     public void InMaTranKhoa(){
-        Console.WriteLine("Ma trận khóa: ");
-        for(int i = 0; i < 5; i++){
-            for(int j = 0; j < 5; j++){
+        Console.WriteLine($"\nMa trận khóa {N}x{N}");
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
                 Console.Write(this.matrankhoa[i][j] + " ");
             }
             Console.WriteLine();
@@ -264,9 +329,9 @@ public class Playfair {
     }
 
     public void InThongTin(string banma, string banro){
-        Console.WriteLine($"Bản rõ (ban đầu): {this.banro}");
+        Console.WriteLine($"\nBản rõ (ban đầu): {this.banro}");
         Console.WriteLine($"Nội dung khóa: {this.khoa}");
-        Console.WriteLine($"Bản mã: {this.TachCap(banma)} ({banma})");
-        Console.WriteLine($"Bản rõ (giải mã): {this.TachCap(banro)} ({banro})");
+        Console.WriteLine($"Bản mã: {this.InTachCap(banma)} ({banma})");
+        Console.WriteLine($"Bản rõ (giải mã): {this.InTachCap(banro)} ({banro})");
     }
 }
