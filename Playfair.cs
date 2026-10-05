@@ -11,6 +11,8 @@ public class Playfair {
     private const int N = 14;
     private string banro = "";
     private string khoa = "";
+    private int sobuocquay = 0;
+    private Random random = new Random();
     // private char[] bangkytu = {
     //     'A', 'B', 'C', 'D', 'E', 'F', 'G',
     //     'H', 'I', 'K', 'L', 'M', 'N', 'O', 
@@ -19,14 +21,11 @@ public class Playfair {
     //     '3', '4', '5', '6', '7', '8', '9'
     // };
     private char[] bangkytu = {
-        // ===== Chữ hoa (26) =====
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 
-        // ===== Số (10) =====
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
-        // ===== Chữ hoa có dấu (67) =====
         'Đ',
         'À', 'Á', 'Ả', 'Ã', 'Ạ',
         'Ă', 'Ằ', 'Ắ', 'Ẳ', 'Ẵ', 'Ặ',
@@ -41,11 +40,9 @@ public class Playfair {
         'Ư', 'Ừ', 'Ứ', 'Ử', 'Ữ', 'Ự',
         'Ỳ', 'Ý', 'Ỷ', 'Ỹ', 'Ỵ',
 
-        // ===== Chữ thường (26) =====
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 
-        // ===== Chữ thường có dấu (67) =====
         'đ',
         'à', 'á', 'ả', 'ã', 'ạ',
         'ă', 'ằ', 'ắ', 'ẳ', 'ẵ', 'ặ',
@@ -63,7 +60,7 @@ public class Playfair {
     // dãy khóa đã chọn lọc từ trùng nhưng là 1 dãy nằm ngang 
     // tiện cho việc sắp xếp và chọn lọc
     private List<char> daykhoa = new List<char>();
-    // sau đó bỏ dãy vào ma trận 7x5 
+    // sau đó bỏ dãy vào ma trận 14 x 14
     private List<List<char>> matrankhoa = new List<List<char>>();
 
     public Playfair(){
@@ -98,6 +95,13 @@ public class Playfair {
         }
     }
 
+    public int SoBuocQuay {
+        get { return this.sobuocquay; }
+        set { 
+            this.sobuocquay = value; 
+        }
+    }
+
     private void KhoiTaoMaTranKhoa(){
         for(int i = 0; i < N; i++){
             this.matrankhoa.Add(new List<char>());
@@ -124,6 +128,9 @@ public class Playfair {
                     Console.WriteLine("Không để trống thông tin !");
                     continue;
                 }
+                Console.Write("Nhập số bước xoay (có thể bỏ trống): ");
+                int.TryParse(Console.ReadLine(), out int sobuocquay_tam);
+                this.SoBuocQuay = sobuocquay_tam;
                 this.BanRo = banro_tam;
                 this.Khoa = khoa_tam;
                 this.BoKhoaVaoMaTran();
@@ -175,6 +182,8 @@ public class Playfair {
             }
         }
     }
+
+
 
     public string MaHoa(){
         string banma = "";
@@ -235,12 +244,16 @@ public class Playfair {
                 banma += this.matrankhoa[dong2][cot1];
             }
         }
-        return banma;
+        Xaotron xaotron = new Xaotron(this.sobuocquay);
+        return xaotron.Xao(banma);
+        //return banma;
     }
 
     public string GiaiMa(string banma){
         string banro = "";
-        string banma_tam = banma;
+        Xaotron xaotron = new Xaotron(this.sobuocquay);
+        string banma_tam = xaotron.GiaiXao(banma);
+        //string banma_tam = banma;
         // nếu số ký tự lẽ (có 1 cặp lẻ)
         if(banma_tam.Length % 2 != 0){
             return "Mã hóa không đủ ký tự trong cặp để giải mã !";
@@ -303,6 +316,20 @@ public class Playfair {
         if(banro.EndsWith("X")){
             banro = banro.Remove(banro.Length - 1);
         }
+    }
+
+    // đảo vị trí: swap ký tự trong cặp và đảo vị trí các cặp đối xứng (từ ngoài vào)
+    // dùng chung cho mã hóa và giải mã 
+    private string DaoViTri(string noidung){
+        int socap = noidung.Length / 2;
+        char[] ketqua = new char[noidung.Length];
+        for(int i = 0; i < socap; i++){
+            int vitridoixung = socap - i - 1;
+            // swap ký tự trong cặp
+            ketqua[vitridoixung * 2] = noidung[i * 2 + 1];
+            ketqua[vitridoixung * 2 + 1] = noidung[i * 2];
+        }
+        return new string(ketqua);
     }
 
     // hàm tách cặp chữ để in ra 

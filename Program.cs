@@ -126,3 +126,15 @@ public class Program {
         pf.InThongTin(banma, banro);
     }
 }
+
+/*
+từ: truongchinh 
+bản mã ban đầu: 
+-> us mG hA Ừt Aj xÀ
+sau khi đối xứng cặp 
+-> xÀ Aj Ừt hA mG us
+sau khi xoay 2 lần 
+-> us xÀ Aj Ừt hA mG 
+
+giải mã thì phải làm ngược lại từ bước cuối đến bước đầu 
+*/ 
